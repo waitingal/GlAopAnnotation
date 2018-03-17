@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">GlAopAnnotation</string>
+    <string name="tips_title">提示</string>
+    <string name="permission_hint_calendar">访问日历权限</string>
+    <string name="permission_hint_camera">访问摄像头权限</string>
+    <string name="permission_hint_contacts">访问通讯录权限</string>
+    <string name="permission_hint_location">访问设备位置信息权限</string>
+    <string name="permission_hint_microphone">访问麦克风设备权限</string>
+    <string name="permission_hint_phone">访问手机状态等权限</string>
+    <string name="permission_hint_sensors">访问设备传感器权限</string>
+    <string name="permission_hint_sms">访问短信权限</string>
+    <string name="permission_hint_storage">访问扩展存储器权限</string>
+    <string name="permission_hint_write_setting">修改系统设置权限</string>
+    <string name="permission_hint_sys_alert_window">系统窗口权限</string>
+
+    <string name="permission_detailed_tips">当前应用缺少 %1$s ,该功能暂时无法使用,请前往系统设置中进行授权.</string>
+    <string name="permission_detailed_tips_2">当前应用缺少响应权限,该功能暂时无法使用,请前往系统设置中进行授权.</string>
+</resources>
