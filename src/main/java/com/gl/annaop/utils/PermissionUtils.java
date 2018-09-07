@@ -104,6 +104,9 @@ public class PermissionUtils {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                  if(Build.VERSION.SDK_INT > 24){
                     dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+                     if(Build.VERSION.SDK_INT >= 26){
+                         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                     }
                     }else {
                     dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
                  }
@@ -112,6 +115,7 @@ public class PermissionUtils {
             }
             dialog.show();
         }catch (Exception e){
+            Log.e("","showTipsDialog--"+e.toString());
         }
     }
 

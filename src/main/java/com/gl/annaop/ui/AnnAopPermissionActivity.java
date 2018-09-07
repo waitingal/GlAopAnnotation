@@ -1,7 +1,9 @@
 package com.gl.annaop.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
@@ -73,6 +75,7 @@ public class AnnAopPermissionActivity extends FragmentActivity {
                 if(listener!=null){
                     listener.onPermissionSuccess();
                 }
+               Exit();
            }else{
                StringBuffer sb=new StringBuffer();
                for (int i=0;i<grantResults.length;i++){
@@ -86,8 +89,10 @@ public class AnnAopPermissionActivity extends FragmentActivity {
                if(listener!=null){
                    listener.onPermissionFail(sb.toString());
                }
+              // PermissionUtils.showTipsDialog(this,sb.toString());
+               permissionLackTips(sb.toString());
            }
-            Exit();
+
         }
     }
 
@@ -96,5 +101,27 @@ public class AnnAopPermissionActivity extends FragmentActivity {
         overridePendingTransition(0, 0);
     }
 
+
+    private void permissionLackTips(String msg){
+        String detailed_msg;
+        if(msg==null || msg.length()<1){
+            detailed_msg=getString(R.string.permission_detailed_tips_2);
+        }else{
+            String peizhi = getString(R.string.permission_detailed_tips);
+            detailed_msg = String.format(peizhi,msg);
+        }
+        AlertDialog.Builder builder= new AlertDialog.Builder(this)
+                .setTitle(this.getString(R.string.tips_title))
+                .setMessage(detailed_msg)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        AnnAopPermissionActivity.this.Exit();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 }

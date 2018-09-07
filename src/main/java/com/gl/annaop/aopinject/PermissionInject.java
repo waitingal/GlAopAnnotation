@@ -82,7 +82,7 @@ public class PermissionInject {
             public void onPermissionFail(String str) {
                 Log.e("","授权失败");
                 noticeBusiness(requestCode,false,object);
-                PermissionUtils.showTipsDialog(context,str);
+               // PermissionUtils.showTipsDialog(context,str);
             }
         });
     }
