@@ -21,7 +21,7 @@ public class AnnAopManage {
         return mInstance;
     }
 
-    public  void init(Context app) {
+    private  void init(Context app) {
         if (app == null) {
             throw new IllegalArgumentException("application must not be null");
         }

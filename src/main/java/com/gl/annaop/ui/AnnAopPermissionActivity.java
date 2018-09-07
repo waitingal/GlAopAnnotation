@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -35,7 +36,7 @@ public class AnnAopPermissionActivity extends FragmentActivity {
         intent.putExtra(PERMISSION_ARRAY,Permissionlist.toArray(new String[Permissionlist.size()]));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
-        ((Activity)c).overridePendingTransition(0, 0);
+        //((Activity)c).overridePendingTransition(0, 0);
     }
 
     @Override
@@ -80,7 +81,6 @@ public class AnnAopPermissionActivity extends FragmentActivity {
                        if(str!=null && str.length()>1){
                            sb.append("'"+str+"'");
                        }
-
                    }
                }
                if(listener!=null){
@@ -95,4 +95,6 @@ public class AnnAopPermissionActivity extends FragmentActivity {
         finish();
         overridePendingTransition(0, 0);
     }
+
+
 }

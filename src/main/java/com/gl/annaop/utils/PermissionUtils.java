@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.gl.annaop.R;
 import com.gl.annaop.ui.AnnAopPermissionActivity;
@@ -34,6 +36,15 @@ public class PermissionUtils {
          * @param explain  说明缺少的权限所对应中文说明
          */
         void onPermissionFail(String explain);
+    }
+
+    /**
+     * 业务接受权限请求结果回调
+     * code: PermissionAnnotation注解的RequestCode值，默认为-1，不回调
+     * result：权限请求结果
+     */
+    public interface PermissionRequestCallBack{
+        void PermissionResult(int code,boolean result);
     }
 
     public static List<String> DeniedPermission(Context context ,String[] permissionarray){
@@ -79,7 +90,8 @@ public class PermissionUtils {
                 String peizhi = context.getString(R.string.permission_detailed_tips);
                 detailed_msg = String.format(peizhi,msg);
             }
-            new AlertDialog.Builder(context)
+
+             AlertDialog.Builder builder= new AlertDialog.Builder(context)
                     .setTitle(context.getString(R.string.tips_title))
                     .setMessage(detailed_msg)
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -87,7 +99,18 @@ public class PermissionUtils {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    }).show();
+                    });
+            AlertDialog dialog = builder.create();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                 if(Build.VERSION.SDK_INT > 24){
+                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+                    }else {
+                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+                 }
+            } else {
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
+            }
+            dialog.show();
         }catch (Exception e){
         }
     }

@@ -10,4 +10,6 @@ public class Config {
     public static String ViewClickSpaceTips="";
     public static  String defaultNetTips="";
    // public static final NetType defaultNetType = NetType.All;
+
+    public static int defaultPermissionRequestCode=-1;
 }
