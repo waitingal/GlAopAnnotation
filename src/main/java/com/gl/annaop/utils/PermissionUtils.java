@@ -7,8 +7,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -24,7 +28,7 @@ import java.util.List;
 /**
  * Created by waiting on 2018/3/9.
  */
-
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class PermissionUtils {
 //    private static OnPermissionListener mOnPermissionListener;
 //    private static int mRequestCode = -1;
@@ -35,7 +39,7 @@ public class PermissionUtils {
          *
          * @param explain  说明缺少的权限所对应中文说明
          */
-        void onPermissionFail(String explain);
+        void onPermissionFail(String explain,String[] deniedPermission);
     }
 
     /**
@@ -44,26 +48,85 @@ public class PermissionUtils {
      * result：权限请求结果
      */
     public interface PermissionRequestCallBack{
-        void PermissionResult(int code,boolean result);
+        void PermissionResult(int code,boolean result,String[] deniedPermission);
+    }
+
+    /**
+     * 需要特殊处理的权限
+     * @param permissionarray
+     * @return
+     */
+    public static List<String> IsHaveSpecialPermission(String[] permissionarray){
+        List<String> speciaPermissionList = new ArrayList<>();
+        for (String s:permissionarray){
+            if(s.equals(Manifest.permission.SYSTEM_ALERT_WINDOW) ||
+                    s.equals(Manifest.permission.WRITE_SETTINGS)){
+                speciaPermissionList.add(s);
+            }
+        }
+        return speciaPermissionList;
     }
 
     public static List<String> DeniedPermission(Context context ,String[] permissionarray){
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             ArrayList<String> requests=new ArrayList<>();
             for (String s:permissionarray){
-                int result = ContextCompat.checkSelfPermission(context, s);
-                if (result!= PackageManager.PERMISSION_GRANTED){
-                    requests.add(s);
+                if(s.equals(Manifest.permission.SYSTEM_ALERT_WINDOW) ||
+                        s.equals(Manifest.permission.WRITE_SETTINGS)){
+                    continue;
+                }else{
+                    int result = ContextCompat.checkSelfPermission(context, s);
+                    if (result != PackageManager.PERMISSION_GRANTED){
+                        requests.add(s);
+                    }
                 }
+
             }
             return requests;
         }
         return null;
     }
 
-    public static void DoRequestPermission(Context c, List<String> Permissionlist, OnPermissionListener listener){
-        AnnAopPermissionActivity.Open(c,listener,Permissionlist);
+
+    public static void DoRequestPermission(Context c, List<String> Permissionlist,List<String>speciaPermissionList,
+                                           OnPermissionListener listener){
+        AnnAopPermissionActivity.Open(c,listener,Permissionlist,speciaPermissionList);
     }
+
+    /**
+     * 是否有 Manifest.permission.WRITE_SETTINGS 权限
+     * @param act
+     * @param REQUEST_CODE_ASK_WRITE_SETTINGS
+     * @return
+     */
+    @RequiresApi(Build.VERSION_CODES.M)
+    public static boolean SpecialWriteSettingsPermission(Activity act, int REQUEST_CODE_ASK_WRITE_SETTINGS){
+        if(!Settings.System.canWrite(act)){
+            Log.e("","权限申请---package ="+ act.getPackageName());
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,Uri.parse("package:" + act.getPackageName()));
+            act.startActivityForResult(intent, REQUEST_CODE_ASK_WRITE_SETTINGS);
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * 是否有 Manifest.permission.SYSTEM_ALERT_WINDOW 权限
+     * @param act
+     * @param REQUEST_CODE_ASK_SYSTEM_ALERT_WINDOW
+     * @return
+     */
+   @RequiresApi(api = Build.VERSION_CODES.M)
+   public static boolean SpecialSystemAlertWindowWPermission(Activity act, int REQUEST_CODE_ASK_SYSTEM_ALERT_WINDOW){
+       if (!Settings.canDrawOverlays(act)) {
+           Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + act.getPackageName()));
+           act.startActivityForResult(intent,REQUEST_CODE_ASK_SYSTEM_ALERT_WINDOW);
+           return false;
+       }else{
+           return true;
+       }
+   }
 
     /**
      * 验证权限是否都已经授权
