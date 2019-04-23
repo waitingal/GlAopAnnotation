@@ -3,6 +3,8 @@
 1.添加PermissionRequestCallBack,回调权限申请结果
 2.PermissionAnnotation 添加RequestCode 默认-1，不执行添加PermissionRequestCallBack回调
 =============20180907==============
+1.PermissionRequestCallBack.PermissionResult 添加被拒绝的权限参数
+2.添加SYSTEM_ALERT_WINDOW和WRITE_SETTINGS支持
 
 
 使用方法：
